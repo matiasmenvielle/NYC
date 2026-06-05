@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NYC 2026">
+<title>Nueva York · 30 jul – 5 ago 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #181818;
+    --bg3: #222222;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ede8;
+    --muted: #888;
+    --accent: #e8c97a;
+    --accent2: #c97a8a;
+    --accent3: #7aace8;
+    --green: #7ac99e;
+    --orange: #e8a87a;
+    --radius: 14px;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { background: var(--bg); }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 40px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #1a1610 0%, var(--bg) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(232,201,122,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .header h1 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: var(--accent); font-style: italic; }
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 14px 20px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #1a1100;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .tab-btn.map-tab.active {
+    background: var(--accent3);
+    color: #001a30;
+    border-color: var(--accent3);
+  }
+
+  /* VIEWS */
+  .view { display: none; padding: 16px 16px 0; }
+  .view.active { display: block; }
+  #view-map { padding: 0; }
+
+  /* DAYS */
+  .day-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  .day-header:active { background: var(--bg3); }
+  .day-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .d1 .day-num { background: rgba(100,160,230,0.18); color: var(--accent3); }
+  .d2 .day-num { background: rgba(201,122,138,0.18); color: var(--accent2); }
+  .d3 .day-num { background: rgba(232,201,122,0.18); color: var(--accent); }
+  .d4 .day-num { background: rgba(122,201,158,0.18); color: var(--green); }
+  .d5 .day-num { background: rgba(180,140,230,0.18); color: #b48ce6; }
+  .d6 .day-num { background: rgba(122,201,158,0.18); color: var(--green); }
+  .d7 .day-num { background: rgba(180,180,170,0.18); color: #aaa; }
+
+  .day-info { flex: 1; min-width: 0; }
+  .day-info strong {
+    font-size: 13px; font-weight: 500;
+    color: var(--text); display: block;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .day-info span { font-size: 11px; color: var(--muted); display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .badge {
+    font-size: 10px; padding: 2px 7px;
+    border-radius: 20px; font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .badge-taylor { background: rgba(201,122,138,0.2); color: var(--accent2); }
+  .badge-prop { background: rgba(232,201,122,0.2); color: var(--accent); }
+
+  .chevron { color: var(--muted); font-size: 16px; flex-shrink: 0; transition: transform .25s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* DAY BODY */
+  .day-body { display: none; padding: 0 14px 14px; }
+  .day-body.open { display: block; }
+
+  .zone {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .slot {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 0 8px;
+    margin-bottom: 9px;
+  }
+  .slot-time {
+    font-size: 10px; color: var(--muted);
+    font-weight: 500; padding-top: 3px;
+    white-space: nowrap; line-height: 1.4;
+  }
+  .slot-name {
+    font-size: 13px; font-weight: 500;
+    color: var(--text); margin: 0 0 2px;
+    line-height: 1.4;
+  }
+  .slot-desc {
+    font-size: 11.5px; color: var(--muted);
+    margin: 0; line-height: 1.55;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center;
+    font-size: 10px; padding: 1px 6px;
+    border-radius: 20px; margin-left: 4px;
+    vertical-align: middle; font-weight: 500;
+  }
+  .pf { background: rgba(122,201,158,0.15); color: var(--green); }
+  .pp { background: rgba(232,201,122,0.15); color: var(--accent); }
+  .pi { background: rgba(180,140,230,0.15); color: #b48ce6; }
+  .pn { background: rgba(232,168,122,0.15); color: var(--orange); }
+  .new-badge {
+    display: inline-flex; align-items: center;
+    font-size: 10px; padding: 1px 6px;
+    border-radius: 20px; margin-left: 4px;
+    background: rgba(100,160,230,0.15); color: var(--accent3);
+    font-weight: 500; vertical-align: middle;
+  }
+
+  .tip {
+    font-size: 11px;
+    border-left: 2px solid;
+    padding: 4px 8px;
+    margin-top: 5px;
+    line-height: 1.55;
+    border-radius: 0 4px 4px 0;
+    background: rgba(255,255,255,0.03);
+    color: var(--muted);
+  }
+  .tip.tg { border-color: var(--green); }
+  .tip.ta { border-color: var(--accent); }
+  .tip.ts { border-color: var(--accent2); }
+  .tip.tr { border-color: #e24b4a; color: #e87a7a; }
+
+  /* RESERVAS BOX */
+  .res-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .res-title {
+    font-size: 12px; font-weight: 600;
+    color: var(--text); margin-bottom: 10px;
+    letter-spacing: .02em;
+  }
+  .ritem {
+    font-size: 12px; color: var(--muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .ritem:last-child { border-bottom: none; }
+  .ritem strong { color: var(--text); }
+
+  /* MAP VIEW */
+  #view-map { display: none; padding: 16px 16px 0; }
+  #view-map.active { display: block; }
+
+  .map-intro {
+    font-size: 12px; color: var(--muted);
+    padding: 10px 0 14px;
+    line-height: 1.5;
+  }
+
+  .map-day-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .map-day-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .map-day-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(122,172,232,0.15);
+    color: var(--accent3);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .map-day-label { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; }
+  .map-open-btn {
+    font-family: var(--font-body);
+    font-size: 11px; font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: none;
+    background: var(--accent3);
+    color: #001a30;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .map-open-btn:active { opacity: 0.8; }
+
+  .map-stops {
+    padding: 8px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .map-stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    position: relative;
+  }
+  .map-stop:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 6px; top: 20px;
+    width: 1px; height: calc(100% - 8px);
+    background: var(--border);
+  }
+  .map-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 2px solid var(--accent3);
+    flex-shrink: 0;
+    margin-top: 2px;
+    z-index: 1;
+  }
+  .map-stop-name {
+    font-size: 11.5px; color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* SCROLL TO TOP */
+  .scroll-top {
+    position: fixed; bottom: 20px; right: 20px;
+    width: 38px; height: 38px;
+    background: var(--accent);
+    color: #1a1100;
+    border: none; border-radius: 50%;
+    font-size: 18px; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    z-index: 100;
+  }
+  .scroll-top.visible { display: flex; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">✈ Itinerario · Versión Final</div>
+  <h1>Nueva <span>York</span></h1>
+  <div class="header-sub">30 jul – 5 ago 2026 · The Gallivant Times Square<br>Metro OMNY · 7 días organizados por zona</div>
+</div>
+
+<!-- TABS -->
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showView('days',this)">📅 Todos los días</button>
+  <button class="tab-btn" onclick="showView('reservas',this)">📋 Reservas</button>
+  <button class="tab-btn map-tab" onclick="showView('map',this)">🗺 Mapa</button>
+</div>
+
+<!-- VISTA: DÍAS -->
+<div class="view active" id="view-days">
+
+<!-- DÍA 1 -->
+<div class="day-card d1">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">1</div>
+    <div class="day-info"><strong>Jueves 30 jul — Llegada · Midtown</strong><span>JFK → Hotel → Krispy Kreme → Halal Guys → 5ta Av → Carmine's</span></div>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Aeropuerto → Hotel</div>
+    <div class="slot"><span class="slot-time">14:00–16:00</span><div><p class="slot-name">Llegada JFK · AirTrain + Subway E → Times Square</p><p class="slot-desc">AirTrain hasta Jamaica Station, tren E directo a 42nd St. ~70 min. $11.15 p/p.</p></div></div>
+    <div class="slot"><span class="slot-time">16:00–17:00</span><div><p class="slot-name">Check-in The Gallivant · ducha y cambio</p></div></div>
+    <div class="zone">Times Square · todo a pie</div>
+    <div class="slot"><span class="slot-time">17:00–17:20</span><div><p class="slot-name">🍩 Krispy Kreme Times Square<span class="pill pp">~$13</span></p><p class="slot-desc">A 2 cuadras del hotel. La Big Apple donut exclusiva de esta sucursal.</p></div></div>
+    <div class="zone">Midtown · Halal Guys + 5ta Avenida</div>
+    <div class="slot"><span class="slot-time">17:30–18:15</span><div><p class="slot-name">🍗 The Halal Guys · Cart original<span class="pill pp">~$13</span></p><p class="slot-desc">53rd y 6th Ave. Chicken & rice con salsa blanca y picante.</p><div class="tip tg">Pedir el combo mixto pollo + gyro. La salsa blanca es la protagonista.</div></div></div>
+    <div class="slot"><span class="slot-time">18:15–19:00</span><div><p class="slot-name">Caminata por la 5ta Avenida<span class="pill pf">gratis</span></p><p class="slot-desc">Hacia la calle 59. Louis Vuitton, Bergdorf Goodman, las vidrieras más icónicas de NY.</p></div></div>
+    <div class="slot"><span class="slot-time">19:00–20:15</span><div><p class="slot-name">🍎 Apple Store · Cubo de cristal 5ta y 59th<span class="pill pp">compra aparte</span></p><p class="slot-desc">El cubo de vidrio subterráneo más famoso del mundo. Cambiar el teléfono.</p><div class="tip tg">Comprar online con "Pick up in store" semanas antes para evitar filas.</div></div></div>
+    <div class="zone">Vuelta al hotel · Empire State de paso</div>
+    <div class="slot"><span class="slot-time">20:15–20:45</span><div><p class="slot-name">Empire State Building · fachada y foto<span class="pill pf">gratis exterior</span></p><p class="slot-desc">En la vuelta al hotel pasan por la calle 34. Foto nocturna del edificio iluminado.</p></div></div>
+    <div class="zone">Cena · Times Square</div>
+    <div class="slot"><span class="slot-time">21:00–22:30</span><div><p class="slot-name">🍝 Carmine's Times Square<span class="pill pp">~$110 · reservar</span></p><p class="slot-desc">Italiano familiar estilo festín. Porciones gigantes para compartir. A 2 cuadras del hotel.</p></div></div>
+    <div class="slot"><span class="slot-time">22:30–23:00</span><div><p class="slot-name">Times Square de noche<span class="pill pf">gratis</span></p><p class="slot-desc">Caminata de regreso al hotel. La primera vez que ves esas pantallas de noche es inolvidable.</p></div></div>
+  </div>
+</div>
+
+<!-- DÍA 2 -->
+<div class="day-card d2">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">2</div>
+    <div class="day-info"><strong>Viernes 31 jul — El día de Taylor Swift</strong><span>West Village → 7th St Burger → Flatiron → SUMMIT → Boucherie</span></div>
+    <span class="badge badge-taylor">🎵 Taylor Day</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Midtown · salida</div>
+    <div class="slot"><span class="slot-time">09:00–09:45</span><div><p class="slot-name">🥯 Liberty Bagels Midtown<span class="pill pp">~$15</span></p><p class="slot-desc">Rainbow Bagel con cream cheese. 5 min del hotel.</p></div></div>
+    <div class="zone">Subway → West Village</div>
+    <div class="slot"><span class="slot-time">10:30–12:30</span><div><p class="slot-name">Recorrido Swiftie · West Village<span class="pill pf">gratis</span></p><p class="slot-desc">Metro a Christopher St. Cornelia Street (foto en el n°23) → calles de piedra → fachada Electric Lady Studios.</p><div class="tip ts">Guiño Taylor: "Cornelia Street" del álbum Lover.</div></div></div>
+    <div class="slot"><span class="slot-time">13:00–14:00</span><div><p class="slot-name">🍔 7th Street Burger · West Village<span class="pill pp">~$22 los dos</span></p><p class="slot-desc">El smash burger más viral de NY. Double cheeseburger + papas.</p><div class="tip tg">Pedir el double cheeseburger con la salsa de la casa.</div></div></div>
+    <div class="zone">Subway norte → Flatiron</div>
+    <div class="slot"><span class="slot-time">14:30–15:15</span><div><p class="slot-name">Flatiron Building · Madison Square Park<span class="pill pf">gratis</span></p><p class="slot-desc">Foto con el edificio con forma de plancha. Descanso en el parque.</p></div></div>
+    <div class="zone">Subway → Midtown · SUMMIT</div>
+    <div class="slot"><span class="slot-time">15:30–18:00</span><div><p class="slot-name">🔭 SUMMIT One Vanderbilt<span class="pill pp">~$108 los dos · reservar</span></p><p class="slot-desc">El mirador de espejos más inmersivo de NY. Reservar para las 15:30.</p><div class="tip ta">Anteojos de sol obligatorios. Evitar ropa suelta (piso de espejo).</div><div class="tip ts">Guiño Taylor: estética Midnights completa.</div></div></div>
+    <div class="slot"><span class="slot-time">18:00–19:30</span><div><p class="slot-name">Regreso al hotel · descanso</p></div></div>
+    <div class="zone">Cena · West Village</div>
+    <div class="slot"><span class="slot-time">20:00–22:30</span><div><p class="slot-name">🥩 Boucherie West Village<span class="pill pp">~$130 · reservar</span></p><p class="slot-desc">Brasserie francesa romántica. Carnes dry-aged y pastas. À la carte. Sin pescado.</p></div></div>
+  </div>
+</div>
+
+<!-- DÍA 3 -->
+<div class="day-card d3">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">3</div>
+    <div class="day-info"><strong>Sábado 1 ago — El día de la propuesta</strong><span>Midtown → Grand Central → Gray's Papaya → Central Park → The View</span></div>
+    <span class="badge badge-prop">💍 Propuesta</span>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Midtown · salida tranquila</div>
+    <div class="slot"><span class="slot-time">09:30–10:15</span><div><p class="slot-name">🍰 Junior's Cheesecake · desayuno<span class="pill pp">~$35</span></p><p class="slot-desc">A 2 cuadras del hotel. El cheesecake más icónico de NY.</p></div></div>
+    <div class="slot"><span class="slot-time">11:00–12:00</span><div><p class="slot-name">Grand Central Terminal<span class="pill pf">gratis</span></p><p class="slot-desc">8 min a pie del hotel. Techo con constelaciones. Grand Central Market adentro.</p></div></div>
+    <div class="zone">Subway → Upper West Side</div>
+    <div class="slot"><span class="slot-time">12:15–12:35</span><div><p class="slot-name">🌭 Gray's Papaya<span class="pill pn">nuevo</span><span class="pill pp">~$8</span></p><p class="slot-desc">Broadway y 72nd St. Combo 2 hot dogs + bebida de piña colada $7.50.</p><div class="tip tg">El perro va con mostaza, sauerkraut y cebolla. Cash o tarjeta.</div></div></div>
+    <div class="zone">Central Park</div>
+    <div class="slot"><span class="slot-time">13:00–14:30</span><div><p class="slot-name">Caminata por el Mall · Bethesda Fountain<span class="pill pf">gratis</span></p></div></div>
+    <div class="slot"><span class="slot-time">15:00–16:00</span><div><p class="slot-name">💍 LA PROPUESTA en Bow Bridge<span class="pill pf">gratis</span></p><p class="slot-desc">Te parás en el medio del puente, pedís a alguien que saque la foto, y cuando tiene el teléfono en mano te arrodillás y sacás el anillo.</p><div class="tip ts">Guiño Taylor — Invisible String: ayer caminaron Cornelia St. Hoy el hilo invisible se cierra en el puente dorado.</div><div class="tip ta">Mejor a las 15hs: luz cálida perfecta.</div></div></div>
+    <div class="slot"><span class="slot-time">16:00–17:00</span><div><p class="slot-name">Fotos y festejo en el parque<span class="pill pf">gratis</span></p></div></div>
+    <div class="slot"><span class="slot-time">17:00–17:30</span><div><p class="slot-name">🦕 Museo Historia Natural · fachada<span class="pill pf">gratis exterior</span></p></div></div>
+    <div class="zone">Hotel → cambiarse elegantes → The View</div>
+    <div class="slot"><span class="slot-time">17:30–19:30</span><div><p class="slot-name">Regreso al hotel · lookearse elegantes</p><p class="slot-desc">Subway de vuelta. Traje para él, vestido para ella.</p></div></div>
+    <div class="slot"><span class="slot-time">20:00–22:30</span><div><p class="slot-name">🌃 Cena en The View · Piso 48 · 360°<span class="new-badge">cambiado</span><span class="pill pp">~$240-270 · reservar YA</span></p><p class="slot-desc">A 3 cuadras del hotel. El único restaurante giratorio de NY. Skyline de 360° iluminado. Piano en vivo.</p><div class="tip tr">Reservar mencionando celebración especial — confirman detalles extra para celebraciones.</div><div class="tip tg">Pedir mesa junto a la ventana al reservar. En una hora ven todo Manhattan.</div></div></div>
+  </div>
+</div>
+
+<!-- DÍA 4 -->
+<div class="day-card d4">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">4</div>
+    <div class="day-info"><strong>Domingo 2 ago — Downtown + Estatua + Brooklyn</strong><span>Ferry → 9/11 → Wall St → Joe's Pizza → Puente → DUMBO → Celestine</span></div>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Subway → Whitehall · tip sur de Manhattan</div>
+    <div class="slot"><span class="slot-time">09:00–10:30</span><div><p class="slot-name">⛴️ Ferry Staten Island · Estatua de la Libertad<span class="pill pf">gratis</span></p><p class="slot-desc">Sale de Whitehall Terminal. 25 min de ida con la Estatua al costado. Ida y vuelta gratis.</p><div class="tip tg">Sentarse del lado derecho en la ida. No caer con vendedores de "tickets" — el ferry es 100% gratis.</div></div></div>
+    <div class="zone">Downtown · todo en el mismo radio a pie</div>
+    <div class="slot"><span class="slot-time">10:45–12:00</span><div><p class="slot-name">9/11 Memorial · Zona Cero<span class="pill pf">gratis</span></p><p class="slot-desc">5 min del ferry. Las dos fuentes infinitas. El Oculus al lado tiene arquitectura increíble.</p></div></div>
+    <div class="slot"><span class="slot-time">12:00–13:00</span><div><p class="slot-name">Wall Street · Charging Bull · Fearless Girl<span class="pill pf">gratis</span></p></div></div>
+    <div class="zone">Subway → Greenwich Village · almuerzo</div>
+    <div class="slot"><span class="slot-time">13:30–14:30</span><div><p class="slot-name">🍕 Joe's Pizza · La pizzería de Spiderman<span class="pill pi">icónico</span><span class="pill pp">~$12</span></p><p class="slot-desc">Porción ~$5. De parado en la vereda. Cash only.</p></div></div>
+    <div class="zone">Puente de Brooklyn → DUMBO</div>
+    <div class="slot"><span class="slot-time">15:00–16:30</span><div><p class="slot-name">Puente de Brooklyn · caminata<span class="pill pf">gratis</span></p><p class="slot-desc">Desde Manhattan hacia Brooklyn. Skyline de frente todo el trayecto. 40 min.</p></div></div>
+    <div class="slot"><span class="slot-time">16:30–17:15</span><div><p class="slot-name">DUMBO · Washington St · Jane's Carousel<span class="pill pf">gratis</span></p><p class="slot-desc">Foto en Washington St (el puente enmarca al Empire State). Jane's Carousel sobre el río ($3).</p></div></div>
+    <div class="slot"><span class="slot-time">17:15–18:30</span><div><p class="slot-name">🌅 Brooklyn Heights Promenade<span class="pill pf">gratis</span></p><p class="slot-desc">La mejor vista del skyline de Manhattan desde Brooklyn. Llegar para las 17:45 para el atardecer.</p></div></div>
+    <div class="zone">Cena · DUMBO</div>
+    <div class="slot"><span class="slot-time">19:00–21:00</span><div><p class="slot-name">🫒 Celestine · DUMBO<span class="new-badge">cambiado</span><span class="pill pp">~$120 · reservar</span></p><p class="slot-desc">1 John St. Mediterráneo sobre el waterfront con vistas al Manhattan Bridge. Mezze, octopus, ribeye, Basque cheesecake.</p><div class="tip tg">Pedir el mezze platter de entrada y el short rib o ribeye de principal. Basque cheesecake de postre.</div><div class="tip ta">Reservar con anticipación. Mencionar que son recién comprometidos — el equipo sorprende con detalles especiales.</div></div></div>
+  </div>
+</div>
+
+<!-- DÍA 5 -->
+<div class="day-card d5">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">5</div>
+    <div class="day-info"><strong>Lunes 3 ago — MET → Katz's → SoHo</strong><span>Upper East Side → Lower East Side → SoHo · norte a sur</span></div>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Midtown · salida</div>
+    <div class="slot"><span class="slot-time">09:30–10:15</span><div><p class="slot-name">🥯 Liberty Bagels · Rainbow Bagel<span class="pill pp">~$15</span></p></div></div>
+    <div class="zone">Subway → Upper East Side</div>
+    <div class="slot"><span class="slot-time">11:00–13:30</span><div><p class="slot-name">🎨 The MET · Museo Metropolitano de Arte<span class="pill pp">~$60 los dos</span></p><p class="slot-desc">Entrar por 5ta Av y calle 82. Templo de Dendur imperdible. Subir a la terraza para ver Central Park desde arriba. Comprar ticket online.</p></div></div>
+    <div class="zone">Subway sur → Lower East Side</div>
+    <div class="slot"><span class="slot-time">14:30–15:45</span><div><p class="slot-name">🥪 Katz's Delicatessen<span class="pill pi">icónico</span><span class="pill pp">~$45</span></p><p class="slot-desc">El pastrami más famoso del mundo. UN sándwich para compartir.</p><div class="tip tr">TICKET: guardarlo en el bolsillo desde que entran hasta que salen. Si lo perdés cobran $50 de multa.</div></div></div>
+    <div class="zone">Caminata oeste → SoHo</div>
+    <div class="slot"><span class="slot-time">16:15–17:00</span><div><p class="slot-name">🍕 Prince Street Pizza · Pizza cuadrada viral<span class="pill pp">~$10</span></p><p class="slot-desc">27 Prince St. La Naughty Pie con salsa vodka y ricotta. Se come parado.</p></div></div>
+    <div class="slot"><span class="slot-time">17:00–18:30</span><div><p class="slot-name">Paseo por el SoHo<span class="pill pf">gratis</span></p><p class="slot-desc">Arquitectura de hierro fundido, adoquines. Flagships de marcas.</p></div></div>
+    <div class="slot"><span class="slot-time">18:30–19:00</span><div><p class="slot-name">🍩 Doughnut Plant<span class="pill pp">~$20</span></p><p class="slot-desc">Las de Tres Leches y Crème Brûlée son las más pedidas.</p></div></div>
+    <div class="zone">Cena · SoHo</div>
+    <div class="slot"><span class="slot-time">20:00–22:00</span><div><p class="slot-name">🍔 Raoul's · SoHo<span class="pill pp">~$145 · reservar</span></p><p class="slot-desc">Bistró francés íntimo. La Raoul's Burger con salsa au poivre es el plato estrella.</p><div class="tip tg">Lunes = NYC Restaurant Week. ~$60 p/p en vez de $80. Verificar en nyctourism.com antes del viaje.</div></div></div>
+  </div>
+</div>
+
+<!-- DÍA 6 -->
+<div class="day-card d6">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">6</div>
+    <div class="day-info"><strong>Martes 4 ago — Chelsea → High Line → Rockefeller</strong><span>Crumbl → High Line → Vessel → Chelsea Market → St. Patrick's → Rockefeller</span></div>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Chelsea · arranque</div>
+    <div class="slot"><span class="slot-time">09:30–10:15</span><div><p class="slot-name">🍪 Crumbl Cookies Chelsea<span class="pill pp">~$20</span></p><p class="slot-desc">238 7th Ave. A 5 min de la entrada al High Line.</p></div></div>
+    <div class="zone">High Line → Hudson Yards</div>
+    <div class="slot"><span class="slot-time">10:30–12:30</span><div><p class="slot-name">🌿 The High Line<span class="pill pf">gratis</span></p><p class="slot-desc">Entrar por Gansevoort St. Caminar hacia el norte hasta Hudson Yards. Arte urbano, jardines, vistas del Hudson.</p><div class="tip ts">Guiño Taylor: las vías viejas convertidas en algo nuevo — "Cardigan".</div></div></div>
+    <div class="slot"><span class="slot-time">12:30–13:00</span><div><p class="slot-name">The Vessel · Hudson Yards<span class="pill pf">gratis exterior</span></p><p class="slot-desc">La estructura de colmena. Fotos desde afuera.</p></div></div>
+    <div class="zone">Chelsea Market · almuerzo</div>
+    <div class="slot"><span class="slot-time">13:00–14:30</span><div><p class="slot-name">🌮 Chelsea Market · Los Tacos No.1<span class="pill pp">~$25</span></p><p class="slot-desc">Los mejores tacos de NY hechos frente a vos.</p></div></div>
+    <div class="zone">Subway → Midtown</div>
+    <div class="slot"><span class="slot-time">15:00–15:45</span><div><p class="slot-name">Catedral St. Patrick<span class="pill pf">gratis</span></p><p class="slot-desc">Arquitectura gótica imponente entre rascacielos.</p></div></div>
+    <div class="slot"><span class="slot-time">15:45–16:30</span><div><p class="slot-name">Rockefeller Center<span class="pill pf">gratis</span></p></div></div>
+    <div class="slot"><span class="slot-time">16:30–18:00</span><div><p class="slot-name">Bryant Park · último descanso<span class="pill pf">gratis</span></p></div></div>
+    <div class="zone">Cena · Times Square</div>
+    <div class="slot"><span class="slot-time">19:00–20:00</span><div><p class="slot-name">🍔 Shake Shack Theater District<span class="pill pp">~$28</span></p></div></div>
+    <div class="slot"><span class="slot-time">20:30–22:00</span><div><p class="slot-name">Último paseo por Times Square<span class="pill pf">gratis</span></p><p class="slot-desc">Cierre del viaje en NY. Absorber por última vez las pantallas gigantes.</p></div></div>
+  </div>
+</div>
+
+<!-- DÍA 7 -->
+<div class="day-card d7">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div class="day-num">7</div>
+    <div class="day-info"><strong>Miércoles 5 ago — Long Live · Vuelo a Orlando</strong><span>Check-out 08:15 · AirTrain · Destino Orlando 11:27 hs</span></div>
+    <span class="chevron">›</span>
+  </div>
+  <div class="day-body">
+    <div class="zone">Última mañana</div>
+    <div class="slot"><span class="slot-time">07:30–08:15</span><div><p class="slot-name">Café y bagel al paso</p><p class="slot-desc">Sin sentarse. Café en la esquina del hotel.</p></div></div>
+    <div class="slot"><span class="slot-time">08:15–08:30</span><div><p class="slot-name">Check-out · valijas listas desde la noche anterior</p></div></div>
+    <div class="slot"><span class="slot-time">08:30</span><div><p class="slot-name">Subway E + AirTrain al aeropuerto<span class="pill pp">~$22 los dos</span></p><p class="slot-desc">Salir a las 08:30 como máximo para el vuelo de las 11:27.</p><div class="tip tr">No salir después de las 08:30 bajo ningún concepto.</div></div></div>
+  </div>
+</div>
+
+</div><!-- /view-days -->
+
+<!-- VISTA: RESERVAS -->
+<div class="view" id="view-reservas">
+  <div class="res-box">
+    <p class="res-title">📋 Reservas urgentes antes de viajar</p>
+    <div class="ritem">🌃 <strong>The View</strong> — Reservar con anticipación mencionando que es una celebración especial. Pedir mesa junto a la ventana.</div>
+    <div class="ritem">🫒 <strong>Celestine</strong> — Reservar mencionando que son recién comprometidos. El equipo agrega detalles especiales.</div>
+    <div class="ritem">🍝 <strong>Carmine's Times Square</strong> — 1 a 2 semanas antes.</div>
+    <div class="ritem">🥩 <strong>Boucherie West Village</strong> — 1 a 2 semanas antes en Resy.</div>
+    <div class="ritem">🍔 <strong>Raoul's SoHo</strong> — 1 semana antes. Verificar NYC Restaurant Week lunes 3 de agosto.</div>
+    <div class="ritem">🔭 <strong>SUMMIT One Vanderbilt</strong> — Online con fecha y hora exactos. Reservar para las 15:30 del 31 de julio.</div>
+    <div class="ritem">🎨 <strong>The MET</strong> — Comprar ticket online para evitar filas.</div>
+  </div>
+</div>
+
+<!-- VISTA: MAPA -->
+<div class="view" id="view-map">
+  <p class="map-intro">Tocá "Abrir ruta" para ver el recorrido del día en Google Maps con todos los puntos marcados.</p>
+
+  <!-- DÍA 1 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">1</div>
+      <span class="map-day-label">Jueves 30 jul · Llegada · Midtown</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.6413,-73.7781&destination=40.7601,-73.9888&waypoints=40.7580,-73.9855|40.7580,-73.9874|40.7614,-73.9776|40.7638,-73.9729|40.7484,-73.9857&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">✈ JFK Airport</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🏨 The Gallivant Times Square</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍩 Krispy Kreme Times Square</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍗 The Halal Guys · 53rd & 6th</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍎 Apple Store · Cubo de Cristal</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🏙 Empire State Building</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍝 Carmine's Times Square</span></div>
+    </div>
+  </div>
+
+  <!-- DÍA 2 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">2</div>
+      <span class="map-day-label">Viernes 31 jul · Taylor Day</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.7570,-73.9888&destination=40.7359,-74.0011&waypoints=40.7314,-74.0015|40.7330,-74.0007|40.7337,-74.0028|40.7411,-73.9897|40.7527,-73.9773&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🥯 Liberty Bagels Midtown</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🎵 Cornelia Street n°23</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🎸 Electric Lady Studios</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍔 7th Street Burger</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🏢 Flatiron Building</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🔭 SUMMIT One Vanderbilt</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🥩 Boucherie West Village</span></div>
+    </div>
+  </div>
+
+  <!-- DÍA 3 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">3</div>
+      <span class="map-day-label">Sábado 1 ago · 💍 Propuesta</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.7563,-73.9895&destination=40.7585,-73.9856&waypoints=40.7527,-73.9772|40.7775,-73.9824|40.7735,-73.9707|40.7751,-73.9714|40.7813,-73.9734&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍰 Junior's Cheesecake</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🚂 Grand Central Terminal</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌭 Gray's Papaya · Broadway 72nd</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">⛲ Bethesda Fountain · Central Park</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">💍 Bow Bridge · LA PROPUESTA</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🦕 Museo Historia Natural</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌃 The View · Piso 48</span></div>
+    </div>
+  </div>
+
+  <!-- DÍA 4 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">4</div>
+      <span class="map-day-label">Domingo 2 ago · Downtown + Brooklyn</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.7013,-74.0133&destination=40.7025,-73.9876&waypoints=40.7115,-74.0134|40.7056,-74.0134|40.7309,-74.0023|40.7061,-73.9969|40.7033,-73.9890|40.6963,-73.9959&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">⛴ Whitehall Ferry Terminal · Estatua de la Libertad</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🕊 9/11 Memorial</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🐂 Charging Bull · Wall Street</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍕 Joe's Pizza</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌉 Puente de Brooklyn</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">📸 DUMBO · Washington St</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌅 Brooklyn Heights Promenade</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🫒 Celestine DUMBO</span></div>
+    </div>
+  </div>
+
+  <!-- DÍA 5 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">5</div>
+      <span class="map-day-label">Lunes 3 ago · MET → Katz's → SoHo</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.7570,-73.9888&destination=40.7238,-74.0003&waypoints=40.7794,-73.9632|40.7223,-73.9874|40.7239,-73.9975|40.7220,-73.9887&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🥯 Liberty Bagels</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🎨 The MET · Upper East Side</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🥪 Katz's Delicatessen</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍕 Prince Street Pizza · SoHo</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍩 Doughnut Plant</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍔 Raoul's SoHo</span></div>
+    </div>
+  </div>
+
+  <!-- DÍA 6 -->
+  <div class="map-day-card">
+    <div class="map-day-title">
+      <div class="map-day-num">6</div>
+      <span class="map-day-label">Martes 4 ago · Chelsea → High Line → Rockefeller</span>
+      <a class="map-open-btn" href="https://www.google.com/maps/dir/?api=1&origin=40.7472,-74.0011&destination=40.7570,-73.9879&waypoints=40.7390,-74.0075|40.7536,-74.0019|40.7424,-74.0066|40.7587,-73.9762|40.7587,-73.9787|40.7536,-73.9832&travelmode=walking" target="_blank">🗺 Abrir ruta</a>
+    </div>
+    <div class="map-stops">
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍪 Crumbl Cookies Chelsea</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌿 The High Line · entrada Gansevoort</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🏗 The Vessel · Hudson Yards</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌮 Chelsea Market · Los Tacos No.1</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">⛪ Catedral St. Patrick</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🏙 Rockefeller Center</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🌳 Bryant Park</span></div>
+      <div class="map-stop"><div class="map-dot"></div><span class="map-stop-name">🍔 Shake Shack Theater District</span></div>
+    </div>
+  </div>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+
+// TABS
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// TOGGLE DÍAS
+function toggleDay(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  chev.style.transform = !isOpen ? 'rotate(90deg)' : '';
+}
+
+// SCROLL TOP
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  btn.classList.toggle('visible', window.scrollY > 300);
+});
+
+// Abrir día 1 por defecto
+document.querySelector('.d1 .day-header').click();
+</script>
+</body>
+</html>
